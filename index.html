@@ -635,10 +635,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </script>
 
 <script>
-async function createSlideshow(selector, jsonFile, speed = 4000) {
+async function createSlideshow(selector, jsonFile, imageFolder, speed = 4000) {
 
     const container = document.querySelector(selector);
-
     if (!container) return;
 
     const response = await fetch(jsonFile);
@@ -647,7 +646,7 @@ async function createSlideshow(selector, jsonFile, speed = 4000) {
     files.forEach((file, i) => {
 
         const img = document.createElement("img");
-        img.src = jsonFile.replace(".json", "/") + file;
+        img.src = imageFolder + file;
 
         if (i === 0)
             img.classList.add("active");
@@ -664,20 +663,25 @@ async function createSlideshow(selector, jsonFile, speed = 4000) {
     let current = 0;
 
     setInterval(() => {
-
         slides[current].classList.remove("active");
-
         current = (current + 1) % slides.length;
-
         slides[current].classList.add("active");
-
     }, speed);
-
 }
 
-createSlideshow(".hero-slideshow", "hero.json", 4000);
-createSlideshow(".gallery-slideshow", "gallery.json", 3500);
+createSlideshow(
+    ".hero-slideshow",
+    "hero.json",
+    "images/hero/",
+    4000
+);
 
+createSlideshow(
+    ".gallery-slideshow",
+    "gallery.json",
+    "images/gallery/",
+    3500
+);
 </script>
 
 </body>
