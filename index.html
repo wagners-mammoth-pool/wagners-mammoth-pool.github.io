@@ -647,7 +647,7 @@ async function createSlideshow(selector, jsonFile, speed = 4000) {
     files.forEach((file, i) => {
 
         const img = document.createElement("img");
-        img.src = "images/" + file;
+        img.src = jsonFile.replace(".json", "/") + file;
 
         if (i === 0)
             img.classList.add("active");
@@ -675,8 +675,8 @@ async function createSlideshow(selector, jsonFile, speed = 4000) {
 
 }
 
-createSlideshow(".hero-slideshow", "images.json", 4000);
-createSlideshow(".gallery-slideshow", "images.json", 3500);
+createSlideshow(".hero-slideshow", "hero.json", 4000);
+createSlideshow(".gallery-slideshow", "gallery.json", 3500);
 
 </script>
 

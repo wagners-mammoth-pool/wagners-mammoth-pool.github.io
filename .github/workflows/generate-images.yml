@@ -1,4 +1,4 @@
-name: Generate Image List
+name: Generate Image Lists
 
 on:
   push:
@@ -14,36 +14,40 @@ jobs:
       contents: write
 
     steps:
+      - uses: actions/checkout@v4
 
-    - uses: actions/checkout@v4
+      - name: Generate hero.json and gallery.json
+        run: |
+          python << 'EOF'
+          import os
+          import json
 
-    - name: Generate images.json
-      run: |
-        python << 'EOF'
-        import os
-        import json
+          EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp", ".gif")
 
-        image_dir = "images"
+          def build_list(folder, output):
+              files = sorted(
+                  f for f in os.listdir(folder)
+                  if f.lower().endswith(EXTENSIONS)
+              )
 
-        exts = (".jpg",".jpeg",".png",".webp",".gif")
+              with open(output, "w") as f:
+                  json.dump(files, f, indent=2)
 
-        files = sorted(
-            f for f in os.listdir(image_dir)
-            if f.lower().endswith(exts)
-        )
+          build_list("images/hero", "hero.json")
+          build_list("images/gallery", "gallery.json")
+          EOF
 
-        with open("images.json","w") as f:
-            json.dump(files,f,indent=2)
-        EOF
+      - name: Commit updated lists
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
 
-    - name: Commit changes
-      run: |
-        git config user.name github-actions
-        git config user.email github-actions@github.com
+          git add hero.json gallery.json
 
-        git add images.json
+          git diff --cached --quiet || \
+          git commit -m "Update image lists"
 
-        git diff --cached --quiet || \
-        git commit -m "Update image list"
+          git push
 
-        git push
+
+
